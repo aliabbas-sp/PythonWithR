@@ -8,3 +8,4 @@ asgiref==3.4.1
 dj-database-url==0.5.0
 pytz==2021.3
 rpy2==3.4.5
+virtualenv==20.13.0
