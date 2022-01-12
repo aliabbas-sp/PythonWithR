@@ -19,4 +19,7 @@ RUN apt -f install
 
 RUN pip install -r requirements.txt
 
+RUN virtualenv venv
+RUN /bin/bash -c "source /code/venv/bin/activate && pip install pyserial && deactivate"
+
 COPY . .
