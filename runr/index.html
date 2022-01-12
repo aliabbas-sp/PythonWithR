@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{#{% load static %}#}
+{#<link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>#}
+<html>
+    <head>
+        <title>
+            PythonWithR
+        </title>
+    </head>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <body>
+    <h1>it works!</h1>
+    <form action="/runr">
+        <button id="stat-btn" class="btn"> Run the Code</button>
+        {% if context %}
+        {{ context }}
+        {% endif %}
+        <div class="form-outline">
+          <textarea class="form-control" id="textAreaExample" rows="4"></textarea>
+          <label class="form-label" for="textAreaExample">Message</label>
+        </div>
+    </form>
+    </body>
+</html>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
