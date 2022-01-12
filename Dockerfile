@@ -1,9 +1,10 @@
-FROM python:3.8
+FROM python:3.10.1
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 WORKDIR /code
+COPY . /code
 
 RUN apt update
 RUN apt -y upgrade
@@ -16,7 +17,6 @@ RUN apt install -f -y ./rstudio-2021.09.0-351-amd64.deb
 
 RUN apt -f install
 
-COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 COPY . .
