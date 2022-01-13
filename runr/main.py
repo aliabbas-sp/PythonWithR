@@ -1,6 +1,12 @@
 from rpy2.robjects import r, pandas2ri
 
-GameRetR = r.source('GetSuperBowlResults.r')
-GameData = (GameRetR[GameRetR.names.index('value')])
-SuperBowlResults = pandas2ri.rpy2py_dataframe(GameData)
-SuperBowlResults.to_excel("SuperBowlResults.xlsx", sheet_name='SuperBowlResults')
+
+def runr():
+
+    gameretr = r.source('getsuperbowlresults.r')
+    gamedata = (gameretr[gameretr.names.index('value')])
+    superbowlresults = pandas2ri.rpy2py_dataframe(gamedata)
+    result_tab_html = superbowlresults.to_html()
+
+    return result_tab_html
+
