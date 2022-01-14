@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-#   'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
 ]
 
@@ -81,7 +80,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static/',
 ]
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "d6n2l3s6b3mh4c",
+        "USER": "bevkoljybiazss",
+        "PASSWORD": "0e51884d6e41a9489f597b01660edbedc3c37f8ddbf0c73cabf5d61fff1a3514",
+        "HOST": "ec2-34-205-46-149.compute-1.amazonaws.com",
+        "PORT": 5432,
+    }
+}

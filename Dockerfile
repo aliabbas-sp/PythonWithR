@@ -20,5 +20,8 @@ WORKDIR /app
 ADD . .
 
 # Run local 
+EXPOSE 8000
+CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "pythonwithr.wsgi:application"]
 
 # Run at Heroku
+# CMD gunicorn pythonwithr.wsgi:application N --bind 0.0.0.0:$PORT
