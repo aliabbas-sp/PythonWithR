@@ -5,7 +5,6 @@ Simple example of how to integrate Python With R using Django and Docker.
 ## Description
 
 Integration between Python and R using Django and Docker.
-
 ## Getting Started
 
 ### Dependencies
