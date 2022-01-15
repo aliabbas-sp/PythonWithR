@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("runr/", views.exec_r_func, name="runr"),
+    path('runr/', views.exec_rscript, name="runr"),
+    path('example/', views.get_example, name="example"),
     path('', views.index, name="home"),
 ]

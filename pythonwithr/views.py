@@ -1,16 +1,23 @@
 from django.shortcuts import render
 from runr.main import *
+from pathlib import Path
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def index(request):
     return render(request, 'home.html')
 
 
-def exec_r_func(request):
-    ret = "It's working!"
-    return render(request, 'home.html', {'ret': ret})
+def exec_rscript(request):
+    superbowlresults = runr()
+    tab_class = "table"
+    superbowlresults = superbowlresults.replace("<thead>", "<table class=""" + tab_class + ">""")
+    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.txt', "r").read()
+    return render(request, 'runr.html', {'superbowlresults': superbowlresults, 'rscript': rscript})
 
-    # superbowlresults = runr()
-    # tab_class = "table"
-    # superbowlresults = superbowlresults.replace("<thead>", "<table class=""" + tab_class + ">""")
-    # return render(request, 'runr.html', {'superbowlresults': superbowlresults})
+
+def get_example(request):
+    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.txt', "r").read()
+    return render(request, 'runr.html', {'rscript': rscript})
