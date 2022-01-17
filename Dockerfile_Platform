@@ -1,0 +1,48 @@
+FROM python:3.10.1-bullseye
+#FROM python:3.11.0a3-bullseye
+
+# Activate the Virutal Env
+#ENV VIRTUAL_ENV=/opt/venv
+#RUN python3 -m venv $VIRTUAL_ENV
+#ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+#RUN /bin/bash -c "source /opt/venv/bin/activate"
+
+# System upgrade & Apps instalation
+
+
+RUN apt update
+RUN apt -y upgrade
+RUN apt -y install openssh-server
+RUN apt -y install r-base r-base-dev wget libpq-dev apt aptitude
+RUN apt -y install libatlas3-base
+RUN apt-cache rdepends r-base-core
+RUN apt -y install r-base-dev
+RUN wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2021.09.0-351-amd64.deb
+RUN apt install -f -y ./rstudio-2021.09.0-351-amd64.deb
+
+RUN Rscript -e 'install.packages("rvest", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("stringr", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("tidyr", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("dplyr", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("languageserver", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("jsonlite", repos="https://cloud.r-project.org")'
+RUN Rscript -e 'install.packages("rlang", repos="https://cloud.r-project.org")' \
+
+#RUN apt -y install gcc python3-dev python3-pip python3-venv python3-wheel
+
+#COPY requirements.txt .
+#
+#RUN pip install --upgrade pip
+#
+#RUN pip install --upgrade install -r requirements.txt
+#
+#WORKDIR /app
+#
+#ADD . .
+
+# Run local 
+#EXPOSE 8000
+#CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "pythonwithr.wsgi:application", "--timeout", "120"]
+
+# Run at Heroku
+#CMD gunicorn pythonwithr.wsgi:application N --bind 0.0.0.0:$PORT

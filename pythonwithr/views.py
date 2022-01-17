@@ -11,13 +11,11 @@ def index(request):
 
 
 def exec_rscript(request):
-    superbowlresults = runr()
-    tab_class = "table"
-    superbowlresults = superbowlresults.replace("<thead>", "<table class=""" + tab_class + ">""")
-    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.txt', "r").read()
-    return render(request, 'runr.html', {'superbowlresults': superbowlresults, 'rscript': rscript})
+    rscript_result = runr()
+    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.r', "r").read()
+    return render(request, 'runr.html', {'rscript_result': rscript_result, 'rscript': rscript})
 
 
 def get_example(request):
-    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.txt', "r").read()
+    rscript = open(BASE_DIR / 'runr/getsuperbowlresults.r', "r").read()
     return render(request, 'runr.html', {'rscript': rscript})

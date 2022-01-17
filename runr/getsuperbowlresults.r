@@ -1,5 +1,4 @@
-packages <- c("rvest", "stringr", "tidyr", "dplyr", "languageserver", "jsonlite", "rlang")
-suppressMessages(install.packages(setdiff(packages, rownames(installed.packages()))))
+#This R Script will perform a web scraping at ESPN website to get the Super Bowl Final results.
 suppressMessages(library(rvest))
 suppressMessages(library(stringr))
 suppressMessages(library(tidyr))
