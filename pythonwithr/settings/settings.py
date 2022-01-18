@@ -8,10 +8,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = 'PYTHONWITHRHEROKUDOCKER'
 DEBUG = 'True'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'pythonwithr.herokuapp.com', '*']
+CSRF_TRUSTED_ORIGINS = ["pythonwithr.herokuapp.com"]
 
 # Application definition
 
 INSTALLED_APPS = [
+    'runr.apps.RunrConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

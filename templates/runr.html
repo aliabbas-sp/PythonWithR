@@ -13,4 +13,5 @@
 {% endblock %}
 {% block table %}
     {{ rscript_result | safe }}
+{% csrf_token %}
 {% endblock %}
