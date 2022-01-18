@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
-{%  block title %}
+{% block title %}
     PythonWithR - RunR
+{#<div class="container-fluid">#}
+{#    <div class="form-floating">#}
+{#        <textarea class="form-control"#}
+{#            placeholder="Leave a comment here"#}
+{#            id="rscript_text"#}
+{#            style="height: 200px">{{ rscript }}</textarea>#}
+{#        <label for="rscript_text">write or load a R Script</label><br>#}
+{#    </div>#}
+{#</div>#}
 {% endblock %}
 {% block table %}
     {{ rscript_result | safe }}

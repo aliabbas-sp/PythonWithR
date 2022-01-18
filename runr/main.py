@@ -1,18 +1,13 @@
-from rpy2.robjects import r, pandas2ri
-import rpy2.robjects as ro
+from rpy2.robjects import r
 from pathlib import Path
 from runr.convert import rpy2_to_pandas
 import pandas as pd
-import os
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-def runr():
-    with open(BASE_DIR / "runr/getsuperbowlresults.r", 'r') as rscript_file:
-        rscript = rscript_file.read()
+def runr(rscript):
+    rscript = "\n".join(rscript.splitlines())
     script_result = r(rscript)
     result_table = format_table(script_result)
     return result_table
@@ -53,7 +48,7 @@ def format_table(script_result):
 def gen_html_table(data_string):
     string_table = data_string
     thead = 0
-    html_table = f"<table class=\"table table-hover\">"
+    html_table = f"<table class=\"table table-striped\">"
     for line in string_table.splitlines():
         if thead == 0:
             html_table += f"<thead>"
