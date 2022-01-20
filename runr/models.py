@@ -6,6 +6,3 @@ class Rscript(models.Model):
 
     def __str__(self):
         return self.Rscript_code
-
-
-

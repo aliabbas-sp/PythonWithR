@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = 'PYTHONWITHRHEROKUDOCKER'
 DEBUG = 'True'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'pythonwithr.herokuapp.com', '*']
-CSRF_TRUSTED_ORIGINS = ["pythonwithr.herokuapp.com"]
+CSRF_TRUSTED_ORIGINS = ['https://pythonwithr.herokuapp.com', 'https://*', 'http://*']
 
 # Application definition
 

@@ -2,19 +2,26 @@ from rpy2.robjects import r
 from pathlib import Path
 from runr.convert import rpy2_to_pandas
 import pandas as pd
+from datetime import datetime
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def runr(rscript):
     rscript = "\n".join(rscript.splitlines())
-    script_result = r(rscript)
+    try:
+        script_result = r(rscript)
+    except BaseException as e:
+        print("Oops, error when executing the R Script.")
+        print("Details: ", e.__class__)
     result_table = format_table(script_result)
     return result_table
 
 
 def format_table(script_result):
     data = pd.DataFrame(rpy2_to_pandas(script_result))
+    data.insert(0, 'Index', data.index)
     num_col = len(data.columns)
     num_row = len(data)
     names_col = data.columns[:].tolist()
@@ -36,10 +43,7 @@ def format_table(script_result):
     for x in names_col:
         data[x] = data[x].str.lstrip()
 
-    data = data.iloc[:, 1:]
-
     data_string = data.to_string(index=False)
-
     html_table = gen_html_table(data_string)
 
     return html_table
@@ -48,14 +52,23 @@ def format_table(script_result):
 def gen_html_table(data_string):
     string_table = data_string
     thead = 0
-    html_table = f"<table class=\"table table-striped\">"
+
+    html_table = f"<table class=\"table table-striped table-hover\">"
     for line in string_table.splitlines():
         if thead == 0:
             html_table += f"<thead>"
+            for n in line.split("_"):
+                html_table += f"<th scope=\"col\">{n}</th>"
         else:
             pass
+        item_index = 0
         for n in line.split("_"):
-            html_table += f"<td>{n}</td>"
+            if thead != 0:
+                if item_index == 0:
+                    html_table += f"<th scope = \"row\">{n}</td>"
+                else:
+                    html_table += f"<td>{n}</td>"
+            item_index += 1
         if thead == 0:
             html_table += f"</thead>"
         else:
@@ -64,3 +77,21 @@ def gen_html_table(data_string):
         thead += 1
     html_table += "</table>"
     return html_table
+
+
+def save_file(rscript):
+    timestamp = datetime.now().strftime("%d%m%Y_%H%M%S")
+    dir_filename = f"runr/export/df_"+timestamp+".xlsx"
+    filename = f"df_"+timestamp+".xlsx"
+
+    rscript = "\n".join(rscript.splitlines())
+    try:
+        script_result = r(rscript)
+        dataframe_result = pd.DataFrame(rpy2_to_pandas(script_result))
+        dataframe_result.to_excel(dir_filename)
+
+    except BaseException as e:
+        error_message = f"Oops, error when executing the R Script."\
+                        "Details: " + e.__class__
+
+    return filename

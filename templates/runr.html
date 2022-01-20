@@ -1,17 +1,16 @@
 {% extends 'base.html' %}
 {% block title %}
     PythonWithR - RunR
-{#<div class="container-fluid">#}
-{#    <div class="form-floating">#}
-{#        <textarea class="form-control"#}
-{#            placeholder="Leave a comment here"#}
-{#            id="rscript_text"#}
-{#            style="height: 200px">{{ rscript }}</textarea>#}
-{#        <label for="rscript_text">write or load a R Script</label><br>#}
-{#    </div>#}
-{#</div>#}
 {% endblock %}
 {% block table %}
-    {{ rscript_result | safe }}
-{% csrf_token %}
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <button type="submit" name='download' class="btn btn-primary btn-floating">
+            <ui class="fas fa-download"></ui>
+        </button>
+    </div>
+    <br>
+    <div class="table-responsive">
+        {{ rscript_result | safe }}
+    </div>
+    {% csrf_token %}
 {% endblock %}
