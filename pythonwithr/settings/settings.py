@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+import utils.exceptionhandler
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -54,6 +55,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pythonwithr.wsgi.application'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utils.exceptionhandler.custom_exception_handler'
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

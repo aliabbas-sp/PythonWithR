@@ -19,6 +19,11 @@
             <!-- Grid row -->
             <div class="row">
                 <!-- Grid column -->
+                <div class="d-flex flex-row bd-highlight mb-3">
+                    <div class="btn-group" role="group" aria-label="Basic outlined example">
+                      <button type="button" class="btn btn-outline-primary" onclick="location.href='{% url 'home' %}'">Home</button>
+                    </div>
+                </div>
                 <form action="/runr/" method="post">
                     {% csrf_token %}
                     <div class="col-md-12">
@@ -50,10 +55,10 @@
                     <br>
                     <div class="container-fluid">
                         <div class="form-floating">
-                            {{ form }}
+                            {{ form.script }}
+                            {{ form.df }}
                             <label for="rscript_text">input your R Script</label>
                             {{ rscript }}
-                            <br>
                         </div>
                         <!-- Grid row -->
                         <!--Table-->
@@ -66,6 +71,7 @@
                 </form>
             </div>
         </div>
+        {{ error_message | safe }}
         <br>
     </div>
 </div>

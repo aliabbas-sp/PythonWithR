@@ -1,14 +1,10 @@
-import runr.main
 from runr.main import *
 from pathlib import Path
 from django.shortcuts import render
 from pythonwithr.forms import RscriptForm
-from django.http import HttpResponse, Http404
-import pandas as pd
-import os
-from runr.models import Rscript
+from django.http import HttpResponse
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -17,51 +13,58 @@ def index(request):
     return render(request, 'home.html', {'form': form})
 
 
-def get_data_json(request):
-
-    return render(request, 'data.json')
-
-
-def exec_rscript(response):
-    form = RscriptForm(response.POST)
+def exec_rscript(request):
+    form = RscriptForm(request.POST)
     if form.is_valid():
-        if response.method == 'POST':
-            rscript = form.data["Rscript_code"]
-            if 'execute' in response.POST:
+        if request.method == 'POST':
+            script = form.data["script"]
+            if 'execute' in request.POST:
                 try:
-                    rscript_result = runr(rscript)
-                except Exception as e:
-                    rscript_result = f"<div class=\"d-flex justify-content-center\">\
-                                        <div class=\"alert alert-danger\" role=\"alert\">\
-                                        Oops, an error occurred when trying to execute your code</div>"
-                return render(response, 'runr.html', {'rscript_result': rscript_result, 'form': form})
+                    result_table, filename = execute(script)
 
-            elif 'download' in response.POST:
+                    mutable_script = form.data._mutable
+                    form.data._mutable = True
+                    form.data["df"] = filename
+                    form.data._mutable = mutable_script
+
+                except Exception as error:
+                    error_message = f"<div class=\"d-flex justify-content-center\">\
+                                    <div class=\"alert alert-danger\" role=\"alert\">\
+                                    Oops, an error occurred when trying to execute your code.\n " \
+                                    f"<br>Details: </br> {error}</div>"
+                    return render(request, 'runr.html',
+                                  {'error_message': error_message, 'form': form})
+                else:
+                    return render(request, 'runr.html',
+                                  {'result_table': result_table, 'filename': filename, 'form': form})
+
+            elif 'download' in request.POST:
                 try:
-                    filename = save_file(rscript)
-
-                    with open(f"runr/export/"+filename, 'rb') as excel:
+                    filename = form.data["df"]
+                except Exception as error:
+                    error_message = f"<div class=\"d-flex justify-content-center\">\
+                                    <div class=\"alert alert-danger\" role=\"alert\">\
+                                    Oops, an error occurred when trying to execute your code.\n " \
+                                    f"<br>Details: </br> {error}</div>"
+                    return render(request, 'runr.html', {'error_message': error_message, 'form': form})
+                finally:
+                    with open(f"runr/export/" + filename, 'rb') as excel:
                         data = excel.read()
-                    response = HttpResponse(data,
-                                            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-                    response['Content-Disposition'] = f'attachment; filename='+filename
-                    return response
-
-                except Exception as e:
-                    rscript_result = f"<div class=\"d-flex justify-content-center\">\
-                                            <div class=\"alert alert-danger\" role=\"alert\">\
-                                            Oops, an error occurred when trying to execute your code</div>"
-                return render(response, 'runr.html', {'rscript_result': rscript_result, 'form': form})
+                        response = HttpResponse(data,
+                                                content_type='application/vnd.openxmlformats-'
+                                                             'officedocument.spreadsheetml.sheet')
+                        response['Content-Disposition'] = f'attachment; filename=' + filename
+                        return response
 
 
 def get_sample(request):
     rscript = open(BASE_DIR / 'runr/rscript_sample.r', "r").read()
     form = RscriptForm(request.POST)
 
-    _mutable = form.data._mutable
+    mutable_script = form.data._mutable
     form.data._mutable = True
-    form.data["Rscript_code"] = rscript
-    form.data._mutable = _mutable
+    form.data["script"] = rscript
+    form.data._mutable = mutable_script
 
     context = {
         'form': form

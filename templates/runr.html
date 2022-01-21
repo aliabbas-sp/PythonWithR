@@ -3,14 +3,15 @@
     PythonWithR - RunR
 {% endblock %}
 {% block table %}
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-        <button type="submit" name='download' class="btn btn-primary btn-floating">
-            <ui class="fas fa-download"></ui>
-        </button>
+    <div class="d-flex flex-row-reverse bd-highlight">
+        <div class="p-2 bd-highlight">
+            <button type="submit" name='download' class="btn btn-primary btn-floating">
+                <ui class="fas fa-download"></ui>
+            </button>
+        </div>
     </div>
-    <br>
     <div class="table-responsive">
-        {{ rscript_result | safe }}
+        {{ result_table | safe }}
     </div>
     {% csrf_token %}
 {% endblock %}

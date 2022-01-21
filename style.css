@@ -9,3 +9,8 @@
     min-height: 10em;
     width: 90%;
 }
+
+#divError {
+    width: 20px;
+    overflow-wrap: break-word;
+}

@@ -1,97 +1,55 @@
 from rpy2.robjects import r
-from pathlib import Path
 from runr.convert import rpy2_to_pandas
 import pandas as pd
 from datetime import datetime
-import os
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-def runr(rscript):
-    rscript = "\n".join(rscript.splitlines())
-    try:
-        script_result = r(rscript)
-    except BaseException as e:
-        print("Oops, error when executing the R Script.")
-        print("Details: ", e.__class__)
+def execute(script):
+    script_text = "\n".join(script.splitlines())
+    script_result = r(script_text)
+    filename = save_file(script_result)
     result_table = format_table(script_result)
-    return result_table
+    return result_table, filename
+
+
+def save_file(script_result):
+    timestamp = datetime.now().strftime("%d%m%Y_%H%M%S")
+    dir_filename = f"runr/export/df_" + timestamp + ".xlsx"
+    filename = f"df_" + timestamp + ".xlsx"
+    dataframe_result = pd.DataFrame(rpy2_to_pandas(script_result))
+    dataframe_result.to_excel(dir_filename)
+    return filename
 
 
 def format_table(script_result):
-    data = pd.DataFrame(rpy2_to_pandas(script_result))
-    data.insert(0, 'Index', data.index)
-    num_col = len(data.columns)
-    num_row = len(data)
-    names_col = data.columns[:].tolist()
-
-    for x in data:
-        data[x] = data[x].astype(str)
-
-    for x in range(num_row):
-        data.iloc[0:num_row, x:(x + 1)] = data.iloc[0:num_row, x:(x + 1)] + '_'
-
-    for x in range(num_col):
-        names_col[x] = names_col[x] + '_'
-
-    data.columns = names_col
-
-    for x in names_col:
-        data[x] = data[x].str.strip()
-
-    for x in names_col:
-        data[x] = data[x].str.lstrip()
-
-    data_string = data.to_string(index=False)
-    html_table = gen_html_table(data_string)
-
+    dataframe = pd.DataFrame(rpy2_to_pandas(script_result))
+    if dataframe.columns[0] == 0:
+        dataframe = dataframe.rename(columns={dataframe.columns[0]: "UnnamedColumn"})
+    dataframe.insert(0, 'Index', dataframe.index)
+    html_table = gen_html_table(dataframe)
     return html_table
 
 
-def gen_html_table(data_string):
-    string_table = data_string
-    thead = 0
+def gen_html_table(dataframe):
 
+    index = list(dataframe['Index'])
+    col_names = dataframe.columns[:].tolist()
     html_table = f"<table class=\"table table-striped table-hover\">"
-    for line in string_table.splitlines():
-        if thead == 0:
-            html_table += f"<thead>"
-            for n in line.split("_"):
-                html_table += f"<th scope=\"col\">{n}</th>"
-        else:
-            pass
-        item_index = 0
-        for n in line.split("_"):
-            if thead != 0:
-                if item_index == 0:
-                    html_table += f"<th scope = \"row\">{n}</td>"
-                else:
-                    html_table += f"<td>{n}</td>"
-            item_index += 1
-        if thead == 0:
-            html_table += f"</thead>"
-        else:
-            pass
+    html_table += f"<thead>"
+    for column in col_names:
+        html_table += f"<th scope=\"col\">{column}</th>"
+    html_table += f"</thead>"
+    for row in index:
         html_table += "<tr>"
-        thead += 1
+        for row_col in col_names:
+            if row_col == 'Index':
+                html_table += f"<th scope = \"row\">{dataframe.loc[row, row_col]}</td>"
+            else:
+                html_table += f"<td>{dataframe.loc[row, row_col]}</td>"
+        html_table += "</tr>"
     html_table += "</table>"
     return html_table
 
-
-def save_file(rscript):
-    timestamp = datetime.now().strftime("%d%m%Y_%H%M%S")
-    dir_filename = f"runr/export/df_"+timestamp+".xlsx"
-    filename = f"df_"+timestamp+".xlsx"
-
-    rscript = "\n".join(rscript.splitlines())
-    try:
-        script_result = r(rscript)
-        dataframe_result = pd.DataFrame(rpy2_to_pandas(script_result))
-        dataframe_result.to_excel(dir_filename)
-
-    except BaseException as e:
-        error_message = f"Oops, error when executing the R Script."\
-                        "Details: " + e.__class__
-
-    return filename
