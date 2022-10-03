@@ -4,7 +4,6 @@ from django.shortcuts import render
 from pythonwithr.forms import RscriptForm
 from django.http import HttpResponse
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -28,10 +27,14 @@ def exec_rscript(request):
                     form.data._mutable = mutable_script
 
                 except Exception as error:
-                    error_message = f"<div class=\"d-flex justify-content-center\">\
-                                    <div class=\"alert alert-danger\" role=\"alert\">\
-                                    Oops, an error occurred when trying to execute your code.\n " \
-                                    f"<br>Details: </br> {error}</div>"
+                    mutable_script = form.data._mutable
+                    form.data._mutable = True
+                    form.data["df"] = None
+                    form.data._mutable = mutable_script
+                    error_message = f"<div class=\"d-flex justify-content-center\" style=\"margin-left: 15%;"\
+                                    f"margin-right:15%; text-align: center\"> <div class=\"alert alert-danger\""\
+                                    f"role=\"alert\"> Oops, an error occurred when trying to execute your code.<br><br>\
+                                    <b>Details: </b>{error} </div> </div>"
                     return render(request, 'runr.html',
                                   {'error_message': error_message, 'form': form})
                 else:
@@ -41,13 +44,20 @@ def exec_rscript(request):
             elif 'download' in request.POST:
                 try:
                     filename = form.data["df"]
+                    if filename == "":
+                        error_message = f"<div class=\"d-flex justify-content-center\" style=\"margin-left: 15%; " \
+                                        f"margin-right:15%; text-align: center\"> <div class=\"alert alert-danger\" " \
+                                        f"role=\"alert\"> Run your script before trying to download. </div> </div>"
+
+                        return render(request, 'runr.html', {'error_message': error_message, 'form': form})
                 except Exception as error:
-                    error_message = f"<div class=\"d-flex justify-content-center\">\
-                                    <div class=\"alert alert-danger\" role=\"alert\">\
-                                    Oops, an error occurred when trying to execute your code.\n " \
-                                    f"<br>Details: </br> {error}</div>"
+                    error_message = f"<div class=\"d-flex justify-content-center\" style=\"margin-left: 15%;"\
+                                    f"margin-right:15%; text-align: center\"> <div class=\"alert alert-danger\""\
+                                    f"role=\"alert\"> Oops, an error occurred when trying to execute your code.<br><br>\
+                                    <b>Details: </b>{error} </div> </div>"
+
                     return render(request, 'runr.html', {'error_message': error_message, 'form': form})
-                finally:
+                else:
                     with open(f"runr/export/" + filename, 'rb') as excel:
                         data = excel.read()
                         response = HttpResponse(data,

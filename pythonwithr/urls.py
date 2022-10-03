@@ -3,8 +3,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', views.index, name="home"),
-    path('runr/', views.exec_rscript, name="runr"),
+    path('admin/', admin.site.urls),
+    path('pythonwithr_exec', views.exec_rscript, name="pythonwithr_exec"),
     path('example/', views.get_sample, name="example"),
 ]
